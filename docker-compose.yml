@@ -1,49 +1,19 @@
 version: "3"
 
-volumes:
-  pg_data:
-
 networks:
   backend:
 
 services:
-  postgres:
-    image: postgres:alpine
-    volumes:
-      - "pg_data:/var/lib/postgresql/data"
-    restart: always
-    ports:
-      - 5432
-    environment:
-      POSTGRES_DB: "hayes-local"
-      POSTGRES_USER: "hayes"
-      POSTGRES_PASSWORD: "!bhj5ui7yh"
-    networks:
-      - backend
-
-  # Redis
-  redis:
-    image: redis:alpine
-    ports:
-      - 6379
-    command: redis-server --appendonly yes --requirepass redispw
-    networks:
-      - backend
 
   api:
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-    - 3000:3000
+    - 4000:4000
     networks:
     - backend
-    depends_on:
-    - postgres
-    - redis
     env_file:
     - local.env
     volumes:
       - "./src:/app/src:ro"
-      - "./libs:/app/libs:ro"
-      - "./migrations:/app/migrations"
